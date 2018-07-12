@@ -1,0 +1,25 @@
+Raymond Lin
+304937942
+Lab 2 
+
+1. The patch improves the performance of 'ls' because it only considers the last argument and processes it. In the patch file, an 'if' statement is removed. Therefore, the 'ls' has better performance after the patch because it does not have to process the 'if' statement.
+2. There may be problems with compatibility. For example, previous scripts that used the 'ls -aA' command would have different results.
+3. Error:
+	Traceback (most recent call last):
+  File "./randline.py", line 70, in <module>
+    main()
+  File "./randline.py", line 64, in main
+    sys.stdout.write(generator.chooseline())
+  File "./randline.py", line 34, in chooseline
+    return random.choice(self.lines)
+  File "/usr/lib64/python2.7/random.py", line 274, in choice
+    return seq[int(self.random() * len(seq))]  # raises IndexError if seq is empty
+	IndexError: list index out of range
+
+	The error results because the file is empty and the script expects a value to be inputted.
+
+4. File "randline.py", line 65
+    except IOError as (errno, strerror):
+                      ^
+	SyntaxError: invalid syntax
+	-The syntax of the arguments in IOError are incorrectly formatted

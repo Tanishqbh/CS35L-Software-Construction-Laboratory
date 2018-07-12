@@ -1,0 +1,21 @@
+Raymond Lin
+304937942
+Lab 2
+
+gitk Description
+Upper Left Window:
+	-shows the series of commits to the repository, with the most recent on top
+	-it also shows the commit message and the branches that were modified
+	
+Upper Middle Window:
+	-shows the users that applied the corresponding changes
+
+Uper Right Window:
+	-shows the date of the change
+
+Lower Left Window:
+	-shows the commit details such as author, committer, parent, child, branches etc...
+	-it also contains the changes in diff format
+
+Lower Right Window:
+	-shows the files that were changed or modified by the particular commit

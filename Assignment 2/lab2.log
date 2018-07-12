@@ -1,0 +1,60 @@
+Raymond Lin
+304937942
+CS35L -Lab 2
+
+Lab: Spell-Checking Hawaiian
+Change locale
+export LC_ALL='C'
+
+Creating Words and Assignment 2 File
+cd /usr/share/dict
+cat words|sort -o ~/Desktop/CS35L/assignment2/words
+cd ~/Desktop/CS35L/assignment2
+wget https://web.cs.ucla.edu/classes/spring18/cs35L/assign/assign2.html
+
+cat assign2.html|tr -c 'A-Za-z' '[\n*]'
+Outputs words and characters line by line. Takes the complement of the set 1, which is everything that is not an alphabetic character, and replaces it with set 2, which is a new line.
+
+cat assign2.html|tr -cs 'A-Za-z' '[\n*]'
+Does the same thing as the previous command, but if the '\n' character us repeated, it will only output one instance of it.
+
+cat assign2.html|tr -cs 'A-Za-z' '[\n*]' | sort
+Does the same thing as the previous command but outputs the words in alphabetical ('sorted') order.
+
+cat assign2.html|tr -cs 'A-Za-z' '[\n*]' | sort -u
+Does the same thing as the previous command, but eliminates any repeated words/characters.
+
+cat assign2.html|tr -cs 'A-Za-z' '[\n*]' | sort -u | comm - words
+Outputs three columns. The first are the words unique to the assign2.html file. The second are the words unique to the words file. The third are the words common to both files. 
+
+cat assign2.html|tr -cs 'A-Za-z' '[\n*]' | sort -u | comm -23 - words
+Does the same thing as the previous command, but only outputs the first column.
+
+Making hwords
+wget http://mauimapp.com/moolelo/hwnwdseng.htm
+mv hwnwdseng.htm table.html
+cat table.html|sed 's/<[^>]*>//g' > nohtml 
+touch hwords
+cat nohtml|tr -cs '`A-Za-z' '[\n*]' > hwords
+cat hwords|sort -u > temp
+cat temp > hwords
+cat hwords| sed 's/[A-Z]/\L&/g' > temp
+cat temp|sort -u > hwords
+comm -23 hwords words > temp
+cat temp|sed 's/[^p|`|k|m|n|w|l|h|a|e|i|o|u]//g' > hwords
+
+Bugs: 
+Doesn't detect words such as 'www'
+
+Runs english spell checker on webpage: 
+cat assign2.html|tr -cs 'A-Za-z`' '[\n*]' |sed 's/[A-Z]/\L&/g'| sort -u | comm -23 - words
+-incorrect as English: ex. posix, buildwords, okina, www
+-word count: 40
+
+Runs hawaiian spell checker on webpage: 
+cat assign2.html|tr -cs "pk\'mnwlhaeiou" '[\n*]' |sed 's/[A-Z]/\L&/g'| sort -u | comm -23 - hwords
+-incorrect as Hawaiian: ex. m, name, awaiian
+-word count: 204
+
+-incorrect as Hawaiian but not as English: ex. people, own, name, open
+-incorrect as English but not as Hawaiian: halau, okina, wiki

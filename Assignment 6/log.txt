@@ -1,0 +1,52 @@
+Raymond Lin
+304937942
+Lab 2
+
+Assignment 6
+Lab
+Check Version of GNU Coreutils
+	echo $PATH
+		-make sure the correct path is prepended
+	sort --version
+		-output:
+		sort (GNU coreutils) 8.29
+		...
+
+Generate a large file
+	od -tf -N 80000000 < /dev/urandom |sed 's/^[0-9]* *//g'| tr -s [:blank:] '\n' > largefile
+		-generates a large file called 'largefile'\
+		-od options:
+			-t: defines the type, in this case, f - float
+			-N: defines the number of bytes to dump out
+		-sed - we delete everything that is just numbers followed by a space, because it is not a floating point number
+		-tr - we translate everything that is whitespace into a newline character
+
+Timing the Sort Command
+Regular sort command:
+	time -p sort -g largefile > /dev/null
+		-output:
+		real 42.32
+		user 241.58
+		sys 0.55
+Parallelized: N = 1
+	time -p sort -g --parallel=1 largefile > /dev/null
+		real 187.36
+		user 186.96
+		sys 0.38
+Parallelized: N = 2
+	time -p sort -g --parallel=2 largefile > /dev/null
+		real 100.08
+		user 191.98
+		sys 0.27
+Parallelized: N = 4
+	time -p sort -g --parallel=4 largefile > /dev/null
+		real 56.56
+		user 194.82
+		sys 0.47
+Parallelized: N = 8
+	time -p sort -g --parallel=8 largefile > /dev/null
+		real 39.14
+		user 226.56
+		sys 0.51
+
+From the data, we can see that the default call on the 'sort' command is already at its most parallelized state, meaning that it is at its most efficient state. If we use the parallel option and set the number of cores to anything less than 8, the 'sort' command takes longer and longer to run. This is because we are allocating work to multiple threads, and so the cores of the CPU are always at work, and each core has less work. Thus the program runs faster.

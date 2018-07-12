@@ -1,0 +1,112 @@
+Raymond Lin
+304937942
+Lab 2 - Turker Garip
+
+Lab: Installing a small change to a big package
+1. Grabbing the coreutils 8.29 and verifying keyring
+	wget ftp://ftp.gnu.org/gnu/coreutils/coreutils-8.29.tar.xz
+		-downloads the file into 'coreutils-8.29.tar.xz'
+	wget https://ftp.gnu.org/gnu/gnu-keyring.gpg
+		-downloads the keyring into 'gnu-keyring.gpg'
+	wget ftp://ftp.gnu.org/gnu/coreutils/coreutils-8.29.tar.xz.sig
+		-downloads the signature into 'coreutils-8.29.tar.xz.sig'
+	tar –xJvf coreutils-8.29.tar.xz
+		-unzips the file
+	gpg --verify --keyring ./gnu-keyring.gpg coreutils-8.29.tar.xz.sig
+		-verfies the signature
+		-errors:
+		gpg: Signature made Wed 27 Dec 2017 10:29:05 AM PST using RSA key ID 306037D9
+		gpg: /u/cs/ugrad/raymondl/.gnupg/trustdb.gpg: trustdb created
+		gpg: Good signature from "Pádraig Brady <P@draigBrady.com>"
+		gpg:                 aka "Pádraig Brady <pbrady@redhat.com>"
+		gpg:                 aka "Pádraig Brady <pixelbeat@gnu.org>"
+		gpg: WARNING: This key is not certified with a trusted signature!
+		gpg:          There is no indication that the signature belongs to the owner.
+		Primary key fingerprint: 6C37 DC12 121A 5006 BC1D  B804 DF6F D971 3060 37D9
+		-the warning indicates that the signature is not from the owner of the file
+	cd coreutils-8.29
+	echo ~
+		-check the absolute path of home directory
+		
+2. Compiling and Building Core Utils
+	./configure --prefix=/u/cs/ugrad/raymondl/coreutilsinstallbuggy
+		-configures the coreutils installation process so that it is installed in the specified directory
+		-creates the makefile
+	make
+		-compiles all program code and creates executables
+		-requires Makefile to run
+	make install
+		-copies executables in final directory
+		-installs coreutils in the specified location
+
+3. Reproducing bug on Machine
+	cd ..
+	cd coreutilsinstallbuggy/bin
+		-navigate to the correct directory
+	./ls -a
+		-run ls without the -A option
+		-output:
+ .          chcon    csplit      du       fold      link      mktemp   paste      readlink    sha256sum   stat     test       uname      who
+ ..         chgrp    cut         echo     groups    ln        mv       pathchk    realpath    sha384sum   stdbuf   timeout    unexpand   whoami
+ '['         chmod    date        env      head      logname   nice     pinky      rm          sha512sum   stty     touch      uniq       yes
+ b2sum      chown    dd          expand   hostid    ls        nl       pr         rmdir       shred       sum      tr         unlink
+ base32     chroot   df          expr     id        md5sum    nohup    printenv   runcon      shuf        sync     true       uptime
+ base64     cksum    dir         factor   install   mkdir     nproc    printf     seq         sleep       tac      truncate   users
+ basename   comm     dircolors   false    join      mkfifo    numfmt   ptx        sha1sum     sort        tail     tsort      vdir
+ cat        cp       dirname     fmt      kill      mknod     od       pwd        sha224sum   split       tee      tty        wc
+ 		-it runs correctly because the -a option shows the '.' and '..' directories
+	./ls -a -A
+		-run ls with the -A option
+		-output:
+ .          chcon    csplit      du       fold      link      mktemp   paste      readlink    sha256sum   stat     test       uname      who
+ ..         chgrp    cut         echo     groups    ln        mv       pathchk    realpath    sha384sum   stdbuf   timeout    unexpand   whoami
+ '['         chmod    date        env      head      logname   nice     pinky      rm          sha512sum   stty     touch      uniq       yes
+ b2sum      chown    dd          expand   hostid    ls        nl       pr         rmdir       shred       sum      tr         unlink
+ base32     chroot   df          expr     id        md5sum    nohup    printenv   runcon      shuf        sync     true       uptime
+ base64     cksum    dir         factor   install   mkdir     nproc    printf     seq         sleep       tac      truncate   users
+ basename   comm     dircolors   false    join      mkfifo    numfmt   ptx        sha1sum     sort        tail     tsort      vdir
+ cat        cp       dirname     fmt      kill      mknod     od       pwd        sha224sum   split       tee      tty        wc
+ 		-note that it still displayes '.' and '..',, even though the -A option should hide them
+
+4. Patching
+	vim patch_file
+		-make the patch file and copy and paste the patch from the website
+	cat patch_file|patch -p1
+		-pipe the patch file as the input for the patch command
+		-the -p1 option removes the first part of the directory
+
+5. Rebuild
+	./configure --prefix=/u/cs/ugrad/raymondl/coreutilsinstall
+		-reconfigure the coreutils-8.29 so that the patched version is installed in a different directory
+	make
+		-rebuilds coreutils so that it contains the patched version of ls
+		-most files do not need to be recompiled, because the patch did not modify them
+
+6. Testing
+	cd ..
+	cd coreutilsinstall
+		-navigate to the correct directory
+	./ls -a
+		-run ls without the -A command
+		-output:
+ chcon    csplit      du       fold      link      mktemp   paste      readlink    sha256sum   stat     test       uname      who
+ chgrp    cut         echo     groups    ln        mv       pathchk    realpath    sha384sum   stdbuf   timeout    unexpand   whoami
+ '['         chmod    date        env      head      logname   nice     pinky      rm          sha512sum   stty     touch      uniq       yes
+ b2sum      chown    dd          expand   hostid    ls        nl       pr         rmdir       shred       sum      tr         unlink
+ base32     chroot   df          expr     id        md5sum    nohup    printenv   runcon      shuf        sync     true       uptime
+ base64     cksum    dir         factor   install   mkdir     nproc    printf     seq         sleep       tac      truncate   users
+ basename   comm     dircolors   false    join      mkfifo    numfmt   ptx        sha1sum     sort        tail     tsort      vdir
+ cat        cp       dirname     fmt      kill      mknod     od       pwd        sha224sum   split       tee      tty        wc
+	./ls -a -A
+		-run ls with the -A command
+		-output:
+ chcon    csplit      du       fold      link      mktemp   paste      readlink    sha256sum   stat     test       uname      who
+ chgrp    cut         echo     groups    ln        mv       pathchk    realpath    sha384sum   stdbuf   timeout    unexpand   whoami
+ '['         chmod    date        env      head      logname   nice     pinky      rm          sha512sum   stty     touch      uniq       yes
+ b2sum      chown    dd          expand   hostid    ls        nl       pr         rmdir       shred       sum      tr         unlink
+ base32     chroot   df          expr     id        md5sum    nohup    printenv   runcon      shuf        sync     true       uptime
+ base64     cksum    dir         factor   install   mkdir     nproc    printf     seq         sleep       tac      truncate   users
+ basename   comm     dircolors   false    join      mkfifo    numfmt   ptx        sha1sum     sort        tail     tsort      vdir
+ cat        cp       dirname     fmt      kill      mknod     od       pwd        sha224sum   split       tee      tty        wc
+		-note thatthis command now hides the '.' and '..' directories, because the -A option overrides the -a option
+		

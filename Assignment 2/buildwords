@@ -1,0 +1,15 @@
+
+#!/bin/bash
+
+cp /usr/share/dict/words .
+arg=$1
+cat $arg|sed 's/<[^>]*>//g' > nohtml 
+touch hwords
+cat nohtml|tr -cs '`A-Za-z' '[\n*]' > hwords
+cat hwords|sort -u > temp
+cat temp > hwords
+cat hwords| sed 's/[A-Z]/\L&/g' > temp
+cat temp|sort -u > hwords
+comm -23 hwords words > temp
+cat temp|sed 's/[^p|`|k|m|n|w|l|h|a|e|i|o|u]//g' > hwords
+cat hwords

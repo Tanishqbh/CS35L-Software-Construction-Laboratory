@@ -1,0 +1,334 @@
+Raymond Lin 
+304937942
+CS35L - Lab 2
+
+1. man -k <search_term>
+   -Looked inside man man
+2. cp: cp: /usr/bin/cp /usr/share/man/man1p/cp.1p.gz /usr/share/man/man1/cp.1.gz
+   sh: sh: /usr/bin/sh /usr/share/man/man1p/sh.1p.gz /usr/share/man/man1/sh.1.gz
+   -commands: whereis cp
+   			  whereis sh
+3. w: shows who is logged on and what they are doing
+   [: bash built-in commands
+   x: no manual entry for x
+   -used echo $PATH for places to search
+   -used find command to look for executable files with one character
+   -used whatis command to define each executable
+4. /etc/alternatives/emacs
+   -command: readlink /usr/bin/emacs
+5. Version 24.3.1
+   They are the same because the emacs file in /usr/bin is a link back to itself.
+6. g+s: set gid or group's permissions
+   o-x: remove the execution permission from others, those who are not the user and not part of specified group
+7. -command: find -mtime 30
+8. 270 symbolic links
+   -command: find . -type l
+	./pmiostat
+	./xzfgrep
+	./updmap
+	./systemd-coredumpctl
+	./rpmquery
+	./links
+	./rmic
+	./jarsigner
+	./parec
+	./nc
+	./inimf
+	./gimp
+	./pnmtofits
+	./bunzip2
+	./arecord
+	./el5-rpmlint
+	./ppmtouil
+	./lastb
+	./gnroff
+	./unxz
+	./systemd-loginctl
+	./flex++
+	./javadoc
+	./paplay
+	./pack200
+	./slogin
+	./python2-config
+	./pnmtopnm
+	./rpmverify
+	./kdesu
+	./dviluatex
+	./jjs
+	./X
+	./javap
+	./gnatgcc
+	./gtroff
+	./atq
+	./jadetex
+	./texhash
+	./unix2mac
+	./texluac
+	./zsoelim
+	./pstack
+	./vimdiff
+	./tclsh
+	./psfaddtable
+	./servertool
+	./gemtopbm
+	./ebb
+	./psfgettable
+	./bzcat
+	./pnmcomp
+	./sgmlnorm
+	./pdfetex
+	./appletviewer
+	./spent
+	./el4-rpmlint
+	./gimp-console
+	./pnmenlarge
+	./dvi2fax
+	./wish
+	./combinediff
+	./kpsepath
+	./flipdiff
+	./jstat
+	./htmex
+	./apropos
+	./latrace-ctl
+	./pnmtotiff
+	./icontopbm
+	./byacc
+	./passwd
+	./httex
+	./rvi
+	./htcontext
+	./jmap
+	./db2rtf
+	./nisdomainname
+	./gpgv
+	./pdflatex
+	./linux32
+	./schemagen
+	./psfstriptable
+	./rksh
+	./dvired
+	./ppmquantall
+	./mail
+	./mac2unix
+	./dvipdfm
+	./Mail
+	./pdfxmltex
+	./pdfjadetex
+	./pnmdepth
+	./fmtutil
+	./rnano
+	./parecord
+	./rhn_register
+	./xzcmp
+	./gnome-keyring
+	./allneeded
+	./bzless
+	./db2ps
+	./ksh
+	./mptopdf
+	./pnmscale
+	./db2dvi
+	./fmtutil-sys
+	./open
+	./latex
+	./jps
+	./setup-nsssysinit
+	./lex
+	./pmatop
+	./lp
+	./ht
+	./texlua
+	./pnmnoraw
+	./kpsexpand
+	./bashbug
+	./sh
+	./pgmedge
+	./phar
+	./extractbb
+	./traceroute6
+	./ypdomainname
+	./grepdiff
+	./jstatd
+	./htxelatex
+	./newaliases.postfix
+	./i386
+	./dvigif
+	./pnmarith
+	./xzcat
+	./rmiregistry
+	./pstree.x11
+	./python2
+	./dvdrecord
+	./kpsewhere
+	./newaliases
+	./sgml2xml
+	./pgmnorm
+	./mktexfmt
+	./python
+	./etags
+	./linux64
+	./pax
+	./unpack200
+	./iptables-xml
+	./nmtui-edit
+	./ppmtojpeg
+	./dvilualatex
+	./setup
+	./gsoelim
+	./cdrecord
+	./reset
+	./jar
+	./ping6
+	./htxetex
+	./texconfig-sys
+	./cancel
+	./jade
+	./jstack
+	./nail
+	./orbd
+	./nmtui-connect
+	./db2pdf
+	./texconfig
+	./wsgen
+	./pgmoil
+	./updmap-sys
+	./pbmtoicon
+	./emacs
+	./lpr
+	./xmltex
+	./pngtopnm
+	./allcm
+	./desktop-file-edit
+	./jrunscript
+	./mkisofs
+	./pmevent
+	./allec
+	./jhat
+	./cc
+	./xjc
+	./atrm
+	./etex
+	./spam
+	./htlatex
+	./awk
+	./lpstat
+	./ghostscript
+	./rmid
+	./rmail
+	./ex
+	./lsdiff
+	./jconsole
+	./texlinks
+	./csh
+	./domainname
+	./hwloc-ls
+	./rview
+	./gpic
+	./lprm
+	./subscription-manager
+	./extcheck
+	./x86_64
+	./sg
+	./pnmfile
+	./pnminterp
+	./lualatex
+	./mk4ht
+	./f95
+	./mkluatexfontdb
+	./mkhybrid
+	./gneqn
+	./initex
+	./mysql_config
+	./serialver
+	./gpg
+	./keytool
+	./jdb
+	./captoinfo
+	./policytool
+	./thumbpdf
+	./pmcollectl
+	./java
+	./f2py.numpy
+	./native2ascii
+	./gtar
+	./ld
+	./pnmsplit
+	./kpsetool
+	./dnsdomainname
+	./bzcmp
+	./jsadebugd
+	./javaws
+	./infotocap
+	./simpdftex
+	./nmtui-hostname
+	./gtbl
+	./xzegrep
+	./view
+	./rvim
+	./python-config
+	./makeinfo
+	./jinfo
+	./nsgmls
+	./jdeps
+	./readcd
+	./nfs4_editfacl
+	./javac
+	./pgmslice
+	./httexi
+	./gjs
+	./bmptoppm
+	./tnameserv
+	./pamon
+	./wsimport
+	./mailq
+	./texconfig-dialog
+	./libpng-config
+	./gmake
+	./javah
+	./lpq
+	./idlj
+	./chsh
+	./jcmd
+	./pnmcut
+	./geqn
+	./ppmnorm
+	./mailq.postfix
+9. librom1394.so.0.3.0
+   -command: cd /use/lib654
+   ls -l -t
+10. environment variables LOCPATH and LANG
+	-commands: man locale, man localedef
+11. downcase-region
+	downcase-word
+	-commands: emacs <any_file>
+	C-h: commands for emacs
+	C-h a downcase: finds commands with "downcase"
+12. C-M-r: search backwards regexp
+	C-M-s: search forward regexp
+	C-M-t: transpose sexps
+	C-M-u: backward-up-list
+	C-M-v: scroll other window
+	-commands: 
+	C-h C-h: pull up help window
+	C-h k <key_sequence>: search for specific key sequence
+13. C-g runs the command keyboard-quit. During execution of Lisp code, this character causes a quit directly. As an editor command, this simply beeps.
+	-commands: 
+	C-h k <key_sequence>: search for specific key sequence
+14. yank: reinsert ("paste") the last stretch of killed text, bound to C-y
+	-commands:
+	C-h a yank
+	C-h k C-y
+15. ls -l: shows each file and its type in colors
+	emacs C-x d: shows only light blue files, shows the parent and parent's parent directories
+	-commands:
+	For ls:
+	cd /usr/bin
+	ls -l
+
+	For emacs:
+	emacs
+	C-h a dired
+	C-x d /usr/bin
+
+

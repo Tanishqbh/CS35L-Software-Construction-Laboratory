@@ -1,0 +1,164 @@
+Raymond Lin
+304937942
+Lab 2 - Turker
+
+Debugging a C Program
+Setup: Getting the file
+	cd Desktop/CS35L/assignment4
+	wget https://web.cs.ucla.edu/classes/spring18/cs35L/assign/coreutils-with-bug.tar.gz
+		-downloads the zipped file into the current directory
+	tar -xzf coreutils-with-bug.tar.gz
+		-unzips the downloaded file
+
+Building Coreutils
+	cd coreutils-with-bug
+	./configure --profile=/u/cs/ugrad/raymondl/CS35L/assignment4/coreutilsbug
+		-configures the installation so that it is in the correct directory
+	make
+		-attempting to compile and make the executables,prepare for installation
+		-error:
+		In file included from utimecmp.h:25:0,
+	                 from utimecmp.c:25:	
+		/usr/include/sys/stat.h:374:12: note: previous declaration of 'futimens' was here
+	 	extern int futimens (int __fd, __const struct timespec __times[2]) __THROW;
+
+	 	Makefile:659: recipe for target 'utimecmp.o' failed
+		make[2]: *** [utimecmp.o] Error 1
+		make[2]: Leaving directory '/w/home.17/cs/ugrad/raymondl/Desktop/CS35L/assignment4/coreutils-with-bug/lib'
+		Makefile:775: recipe for target 'install' failed
+		make[1]: *** [install] Error 2
+		make[1]: Leaving directory '/w/home.17/cs/ugrad/raymondl/Desktop/CS35L/assignment4/coreutils-with-bug/lib'
+		Makefile:419: recipe for target 'install-recursive' failed
+		make: *** [install-recursive] Error 1
+
+		-the error indicates that the function "futimens()" was already defined
+	wget https://web.cs.ucla.edu/classes/spring18/cs35L/assign/coreutils.diff
+		-download the patch file from the website
+	cat coreutils.diff|patch -p0
+		-apply the patch
+	make
+		-successfully compiles program code and creates executables
+		-the renaming patch fixes the issue, because it changes the function name from "futimens" to "coreutils_futimens"
+
+Reproducing the Bug
+	-ran the commands on the assignment website
+	-creates a temporary directory containing 3 files
+	-runs the ls command from the buggy core utils directory
+	$ tmp=$(mktemp -d)
+	$ cd $tmp
+	$ touch -d '1918-11-11 11:00 GMT' wwi-armistice
+	$ touch now
+	$ sleep 1
+	$ touch now1
+	$ TZ=UTC0 ~/Desktop/CS35L/assignment4/coreutils-with-bug/src/ls -lt --full-time wwi-armistice now now1
+		-output:
+			-rw-r--r-- 1 eggert csfac 0 1918-11-11 11:00:00.000000000 +0000 wwi-armistice
+			-rw-r--r-- 1 eggert csfac 0 2017-01-25 00:11:55.528846902 +0000 now1
+			-rw-r--r-- 1 eggert csfac 0 2017-01-25 00:11:54.524820127 +0000 now
+		-the file 'wwi-armistice' should be on the bottom, because it is the oldest file, not the newest
+		
+Using the Debugger
+	gdb ~/Desktop/CS35L/assignment4/coreutils-with-bug/src/ls
+		-open the GNU debugger and select the 'ls' executable in the directory
+	info functions
+		-lists the function names in all the c files
+		-functions of interest
+			-compare_atime()
+			-compare_ctime()
+			-compare_mtime()
+			-sort_files()
+	break sort_files
+		-set a breakpoint at one of the functions - in this case, sort_files
+	run -lt --full-time wwi-armistice now now1
+		-run the program in the debugger with the following options and arguments
+		-debugger will stop the program at the start of the 'sort_files' function
+	step
+		-step through the program line by line
+	list
+		-look at the lines around the current line
+		-output:
+			switch (time_type)
+				func = sort_reverse ? rev_cmp_mtime : compare_mtime;
+		qsort (files, files_index, sizeof *files, func);
+
+		-the 'sort_files' function calls another function 'compare_mtime' or 'rev_cmp_mtime'
+	kill
+		-stop debugging, because we must set a new breakpoint
+	clear
+		-remove the first breakpoint
+	break compare_mtime
+		-set a breakpoint whenever the compare_mtime function is called
+	run -lt --full-time wwi-armistice now now1
+		-start the program again within GDB
+		-will stop at the function call 'compare_mtime'
+	step
+		-step into the function
+		-output:
+			static int compare_mtime (V a, V b) { return cmp_mtime (a, b, xstrcoll); }
+		-it looks like 'compare_mtime' calls another function 'cmp_mtime'
+	step
+	list
+		-show lines around current line
+		-output:
+		static inline int
+        timespec_cmp (struct timespec a, struct timespec b)
+        {
+          int diff = a.tv_sec - b.tv_sec;
+          return diff ? diff : a.tv_nsec - b.tv_nsec;
+        }
+
+        -it looks like 'cmp_mtime' calls another function 'timespec_cmp', in the file 'timespec.h'
+        -the issue is with the possibility of overflow, when 'b.tc_sec' is subtracted from 'a.tv_sec' 
+        -if one of the values is extremely small, and the other value is extremely large, overflow will occur
+    quit
+    	-exit the debugger
+
+Construct a Patch
+	cd ~/Desktop/CS35L/assignment4
+		-go back into the right directory
+	cp ./coreutils-with-bug/lib/timespec.h .
+		-copies the timespec header file into the current directory
+	vim timespec.h
+		-edit the new file
+		-new function:
+		static inline int
+		timespec_cmp (struct timespec a, struct timespec b)
+		{
+		        if(a.tv_sec > b.tv_sec)
+		        {
+		                return 1;
+		        }
+		        else if(a.tv_sec < b.tv_sec)
+		        {
+		                return -1;
+		        ]
+		        else
+		        {
+		        return 0;
+		        }
+		}
+	diff -u ./coreutils-with-bug/lib/timespec.h timespec.h > lab4.diff
+		-creates a file 'lab4.diff' which is patch file in the form of a ChangeLog entry
+
+Producing the Problem in Home Directory
+	mkdir test
+		-create a directory for testing the bug
+	$ tmp=$(mktemp -d)
+	$ cd $tmp
+	$ touch -d '1918-11-11 11:00 GMT' wwi-armistice
+	$ touch now
+	$ sleep 1
+	$ touch now1
+		-run the commands on the assignment page
+	ls -lt
+		-run the command
+		-output:
+			-rw-r--r-- 1 raymondl csugrad 0 Dec 17  2054 wwi-armistice
+            -rw-r--r-- 1 raymondl csugrad 0 May  3 17:04 now1
+            -rw-r--r-- 1 raymondl csugrad 0 May  3 17:04 now
+        -SEASnet does not do well 
+        -it appears that the SEASnet server interprets the timestamp of the 'wwi-armistice' as December 17th, 2054
+        -the local file system uses time stamps that are based on the number of seconds since the file was created
+        -however, there is difference between the local file system and the SEASnet server, and thus the sign bit of the file's timestamp is incorrectly translated
+        -as a result, the machine interprets the timestamp of 'wwi-armistice' as something that is in the future
+

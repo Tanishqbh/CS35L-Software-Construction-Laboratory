@@ -1,0 +1,50 @@
+Raymond Lin
+304937942
+Lab 2
+
+Lab
+dpkg --get-selections | grep openssh
+     -make sure openssh-server and openssh-client is installed
+     -output:	
+     	openssh-server install
+	openssh-client install
+	openssh-sftp-server install
+     -all required packages are installed
+
+Server side
+ssh-keygen
+     -generate public and private keys
+sudo useradd -d /home/everett_home -m everett
+     -creates an account for a new user, 'everett'
+     -everett's home directory is '/home/everett_home'
+sudo passwd everett
+     -creates the password for user 'everett'
+     -asks the user to input the password
+cd /home/everett_home
+     -navigate into 'everett''s home directory
+sudo mkdir .ssh
+     -makes a new directory called '.ssh'
+sudo chwon -R everett .ssh
+     -changes ownership anmd permission on .ssh directory
+     -allows the 'other' group, including 'everett', to have read, write, and execute permissions on all files in the .ssh directory
+
+Client side
+ssh-copy-id -i Raymond@192.168.43.172
+     -copy public key to server
+     -'Raymond' is the username that the server side set for my account
+     -192.168.43.172 is the IP address of the server - found using ifconfig
+ssh-add
+     -first time had an error
+     -error message:
+     	    Could not open a connection to your authentication agent
+eval `ssh-agent -s`
+     -turns out ssh-agent was not yet started
+ssh-add
+     -adds private key to authentication agent, so that next time logging into the server does not require a password
+ssh Raymond@192.168.43.172
+     -connects to the server under user 'Raymond'
+ssh -X Raymond@192.168.43.172
+     -connects to the server under user 'Raymond'
+     -the -X option allows for X11 forwarding, allowing the client to use applications
+firefox
+     -opens the firefox application on client machine

@@ -1,0 +1,45 @@
+Raymond Lin
+304937942
+Lab 2
+
+Homework
+1. In the first scenario, the resulting
+network is still secure. Although someone
+may be observing all the bytes going across
+the network, they will not be able to decipher
+the data, because it is encrypted. First, the
+server sends the client a "challenge question"
+that the client must decrypt using their
+private key. Because, they do not have the
+private key, the attacker cannot act as the
+user, and thus the attacker cannot be validated.
+Then, the communication between client and
+server switches to session encryption, a
+symmetric key pair. Data going back and forth
+cannot be read by attackers, because it is
+encrypted.
+
+In the second scenario, the resulting network is
+not secure. Because the attacker has access to
+all of the user's keystroke, the attacker will
+be able to retrieve the passphrase for the
+private key when the user inputs it.
+
+In the third scenario, the resulting network is
+also not secure. If the attacker has access to
+the USB drive that the user's computer is
+booting off of, the attacker also has access to
+the private key itself, as it is inside the USB
+drive.
+
+2. Just because the signatures match, does not
+mean that the data is sent from the original
+owner or developer. It is possible that an
+outside attacker gains access to the symmetric
+session key, modifies the transmitted data,
+and resigns the data with the attacker's key.
+This will bypass '--verify' because it only
+checks to see if the signatures on the data
+and the key match. A solution to this problem
+would be to meet up personally with the owner
+of the data and compare the fingerprints.

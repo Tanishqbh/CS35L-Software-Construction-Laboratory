@@ -1,0 +1,40 @@
+Raymond Lin
+304937942
+Lab 2
+
+Homework
+1. 	-
+2. 	$git checkout v3.0 -b quote
+		-checkout version 3.0 and create a branch called quote
+3. 	$patch -p1 < quote-3.0-patch.txt
+		-run the patch on the new branch
+4 & 5. emacs src/cmp.c
+	C-x 4 a
+		-this command creates a change log file where you can add a message to each modified file that explains
+			what was modified
+		-repeat the above steps to all 6 modified files
+6.  $git add .
+		-add the current directory to index
+	$git commit -F ChangeLog
+		-add changes to local repo
+7. 	$git format-patch -1 --stdout > formatted-patch.txt
+		-generate a formatted patch that other people can use
+8.  $git checkout v3.0 -b partner
+		-checkout version 3.0 and create a branch called partner
+		-my partner is Kenneth Le, 804953883
+	$git am < partner-patch.txt
+		-apply partner's patch to working directory
+	$./bootstrap
+	$./configure
+	$make
+	$make check
+		-build the resulting program 	
+9. 	$make distdir
+		-creates new directory diffutils-3.0.1-127b that contains the newly patched diffutils 
+		-the ChangeLog shows Kenneth's messages
+		-therefore the patch was successful
+10.	$cd ~/eggert/gnu/emacs
+		-get into the directory
+	$gitk
+		-gitk is a repository browser where you can see all of the changes that have been done to a particular directory
+		-look inside the windows for the newest merge that is not newer than 01/25/2015

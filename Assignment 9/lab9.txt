@@ -1,0 +1,155 @@
+Raymond Lin
+304937942
+Lab 2
+
+Lab
+1.	$git clone https://git.savannah.gnu.org/git/diffutils.git
+		-copy the diffutil directory and its contents into working directory
+2.	$git log > git-log.txt
+		-output the log of changes to a file named git-log.txt
+3.	$git tag > git-tags.txt
+		-output the git tags to a file named git-log.txt
+	$vi git-log.txt
+4.	/maint: quote 'like this' or "like this", not `like this'
+		-searches for the input within the file
+	C-c
+		-copy the commit number
+	$git show 62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f > quote-patch.txt
+		-shows the diff file generated when the specified commit was done
+		-output the text to a file named quote-patch.txt
+5.	$git checkout v3.0
+		-make version 3.0 of diffutils the working directory
+6.	$patch -p1 < quote-patch.txt
+		-apply previously made patch to it
+		-there are some errors
+		-we keep pressing enter until the end
+7.	$git status
+		-shows a list of files that were modified and a list of files that were not
+		-output:
+			HEAD detached at v3.0
+			Changes not staged for commit:
+			  (use "git add <file>..." to update what will be committed)
+			  (use "git checkout -- <file>..." to discard changes in working directory)
+
+			        modified:   NEWS
+			        modified:   README
+			        modified:   TODO
+			        modified:   doc/diagmeet.note
+			        modified:   ms/config.bat
+			        modified:   ms/config.site
+			        modified:   po/en.po
+			        modified:   src/analyze.c
+			        modified:   src/cmp.c
+			        modified:   src/context.c
+			        modified:   src/diff.c
+			        modified:   src/diff.h
+			        modified:   src/diff3.c
+			        modified:   src/dir.c
+			        modified:   src/ifdef.c
+			        modified:   src/io.c
+			        modified:   src/sdiff.c
+			        modified:   src/side.c
+			        modified:   src/system.h
+			        modified:   src/util.c
+			        modified:   tests/help-version
+
+			Untracked files:
+			  (use "git add <file>..." to include in what will be committed)
+
+			        HACKING.orig
+			        HACKING.rej
+			        NEWS.orig
+			        NEWS.rej
+			        README-hacking.orig
+			        README-hacking.rej
+			        README.orig
+			        README.rej
+			        TODO.orig
+			        TODO.rej
+			        cfg.mk.orig
+			        cfg.mk.rej
+			        doc/diagmeet.note.orig
+			        doc/diagmeet.note.rej
+			        doc/diffutils.texi.orig
+			        doc/diffutils.texi.rej
+			        git-log.txt
+			        git-tags.txt
+			        grep
+			        man/help2man.orig
+			        man/help2man.rej
+			        ms/config.site.orig
+			        po/en.po.rej
+			        quote-patch.txt
+			        src/analyze.c.rej
+			        src/cmp.c.orig
+			        src/cmp.c.rej
+			        src/context.c.orig
+			        src/context.c.rej
+			        src/diff.c.orig
+			        src/diff.c.rej
+			        src/diff.h.orig
+			        src/diff.h.rej
+			        src/diff3.c.orig
+			        src/diff3.c.rej
+			        src/dir.c.orig
+			        src/dir.c.rej
+			        src/ifdef.c.rej
+			        src/io.c.rej
+			        src/sdiff.c.orig
+			        src/sdiff.c.rej
+			        src/side.c.rej
+			        src/system.h.orig
+			        src/system.h.rej
+			        src/util.c.orig
+			        src/util.c.rej
+			        tests/help-version.orig
+			        tests/help-version.rej
+
+8.	$emacs NEWS
+	C-x v-=
+		-finds all the changes in the specified file
+	C-x v-u
+		-reverts the identified changes
+	C-x v-= C-h m
+		-lists available commands when in buffer for C-x v-=
+		-C-c C-a: apply this hunk to its target file 
+		-C-c C-c: go to the source file and line corresponding to this hunk
+	#use all of the above commands on the non-c files
+9.	C-x v-=
+	C-u C-u C-a
+		-undo the certain hunk that the cursor is currently at
+		-skip the undoing if it is a code change
+	#use all of the above commands on all c files
+10. $emacs src/*.c.rej
+		-open the rejected files
+		-it appears that a couple of lines in diff.c and diff3.c were not replaced
+		-manually updated all unpatched hunks
+11. $git clean -f
+		-removes all untracked files in the directory
+12. $git diff > quote-3.0-patch.txt
+		-make a patch and store it into quote-3.0-patch.txt
+13. $vi README-hacking
+		-look at how to build diffutils
+	$./bootstrap
+	$./configure
+	$make
+	$make check
+		-builds the diffutils 
+	$./src/diff --help
+		-output shows ' instead of `
+14. $mv diffutils diffutils-3.0-patched
+		-rename the newly patched directory
+	$git clone https://git.savannah.gnu.org/git/diffutils.git diffutils-3.0
+		-redownload the original diffutils directory
+	$./diffutils-3.0-patched/src/diff -pru diffutils-3.0 diffutils-3.0-patched > quote-3.0-test.txt
+		-using my own patched version of the diff program, compare the two directories and output
+			the differences into a file named quote-3.0-test.txt
+15.	$diff quote-3.0-patch.txt ../quote-3.0-test.txt
+		-find the difference between the patch file we created using the built in diff command
+			and the patch file we created using the diff command that we patched
+		-the output has many differences, but the differences are innocuous
+
+
+
+
+

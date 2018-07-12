@@ -1,0 +1,82 @@
+#!/bin/bash
+
+IFS=$'\n'
+dir=$1
+RESULT=`ls -a $dir`
+declare -a ARRAY
+declare -a ARRAYDOT
+declare -a ALLFILESTEMP
+declare -a ALLFILES
+let countdot=0
+let count=0
+let tot=0
+
+for FILE in $RESULT
+do
+	if [ ! -L "$dir/$FILE" ]
+	then
+		if [ -f "$dir/$FILE" ]
+		then   
+			let tot=tot+1
+		   	    if [ "$FILE" =~ ".*\*.*" ]			#same as ==
+			    then
+				IFS=$'\n\t. ' 
+			    else
+				IFS=$'\n'
+			    fi
+			    									#put names of files into ARRAYDOT if they start with a . and into ARRAY if they don't
+			if [ "${FILE:0:1}" == '.' ]				#this will retrieve the first character in the FILE variable
+			then
+			    ARRAYDOT[$countdot]="$FILE"
+		   	    let countdot=countdot+1
+			else
+			    ARRAY[$count]="$FILE"
+			    let count=count+1
+      
+			fi
+		fi
+	fi
+done
+
+
+
+ALLFILESTEMP=($(for c in "${ARRAY[@]}"				#sort ARRAY
+do
+    echo $c
+done|sort))
+
+
+let index=0
+for a in "${ARRAYDOT[@]}"
+do
+    ALLFILES[$index]="$a"							#make an array ALLFILES
+    let index=index+1								#add elements from ARRAYDOT into ALLFILES because they belong in there first
+done
+
+for b in "${ARRAY[@]}"								#add elements from ARRAY into ALLFILES
+do
+    ALLFILES[$index]="$b"
+    let index=index+1
+done
+
+for (( i=0; i<$index; i++ ))						#traverse the array and compare each element with the ones after it
+do
+    FILE="${ALLFILES[$i]}"
+    for (( j=$i; j<$index; j++ ))
+    do
+	FILE2="${ALLFILES[$j]}"
+	if [ "$FILE" != "$FILE2" ]						#if the file names are not the same
+	then
+	    compres=`cmp -s -- "$FILE" "$FILE2"`		#run a cmp command on the two files
+	    if [ "$?" == "0" ]							#if the exit status of cmp is 0 (success), replace the file with a link
+	    then
+		temp=$FILE2
+		rm -- "$FILE2"
+		ln -- $FILE $temp
+	    fi	
+	fi
+    done
+done
+
+		   
+

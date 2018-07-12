@@ -1,0 +1,128 @@
+Raymond Lin
+304937942
+Lab 2 
+
+Sfrob
+Differences in Performance
+-'temp' is file that contains unfrobnicated words
+	time ./sfrobu temp
+		-output:
+		real    0m0.001s
+		user    0m0.000s
+		sys     0m0.001s
+
+	time ./sfrob < temp
+		-output:
+		real    0m0.001s
+		user    0m0.001s
+		sys     0m0.000s
+
+-the regular 'sfrob' program spends more time in user mode, while the 'sfrobu' program spends more time in kernel mode
+-this is expected becase 'sfrobu' uses system calls, while 'sfrob' uses library functions
+
+-'temp' was modified to contain 10x the previous number of unfrobinated text
+	time ./sfrobu temp
+		-output:
+		real    0m0.003s
+		user    0m0.001s
+		sys     0m0.002s
+
+	time ./sfrob < temp	
+		-output:
+		real    0m0.002s
+		user    0m0.001s
+		sys     0m0.000s
+
+-'temp' was modified to contain 100x the previous number of unfrobnicated text
+	time ./sfrobu temp
+		-output:
+		real    0m0.008s
+		user    0m0.002s
+		sys     0m0.005s
+
+	time ./sfrob < temp	
+		-output:
+		real    0m0.003s
+		user    0m0.001s
+		sys     0m0.001s
+
+-'temp' was modified to contain 1000x the previous number of unfrobnicated text
+	time ./sfrobu temp
+		-output:
+		real    0m0.093s
+		user    0m0.009s
+		sys     0m0.053s
+
+	time ./sfrob < temp	
+		-output:
+		real    0m0.012s
+		user    0m0.008s
+		sys     0m0.002s
+
+-'temp' was modified to contain 10000x the previous number of unfrobnicated text
+	time ./sfrobu temp
+		-output:
+		real    0m0.952s
+		user    0m0.130s
+		sys     0m0.470s
+
+	time ./sfrob < temp	
+		-output:
+		real    0m0.176s
+		user    0m0.086s
+		sys     0m0.009s
+
+-the regular 'sfrob' program is much more efficient that 'sfrobu'
+-however, it seems like the time for the regular 'sfrob' program remained quite similar, regardless of the number of lines in the input file
+-on the other hand, the 'sfrobu' program is affected by the number of lines in the input file - its time spent in both user and kernel mode increased
+
+-ran strace in order to find number of comparisons made
+
+Lines 				Comparisons - sfrobu		Comparisons - sfrob
+1					86							33
+10					590							32
+100					5636						32
+1000				56036						32
+10000				560040						32
+
+-Numer of comparisons as a function of input lines
+-follows a linear function: f(lines) ~= 56 * lines
+
+Time Comparison with sfrobs
+-'temp' is file that contains unfrobnicated words
+	time ./sfrobs temp
+		-output:
+		real    0m0.006s
+		user    0m0.005s
+		sys     0m0.004s
+
+-'temp' was modified to contain 10x the previous number of unfrobinated text
+	time ./sfrobs temp
+		-output:
+		real    0m0.005s
+		user    0m0.001s
+		sys     0m0.008s
+
+-'temp' was modified to contain 100x the previous number of unfrobnicated text
+	time ./sfrobs temp
+		-output:
+		real    0m0.008s
+		user    0m0.002s
+		sys     0m0.007s
+
+-'temp' was modified to contain 1000x the previous number of unfrobnicated text
+	time ./sfrobs temp
+		-output:
+		real    0m0.028s
+		user    0m0.011s
+		sys     0m0.008s
+
+-'temp' was modified to contain 10000x the previous number of unfrobnicated text
+	time ./sfrobs temp
+		-output:
+		real    0m0.321s
+		user    0m0.098s
+		sys     0m0.018s
+
+-from the data above, we can conclude that the order of the performance of each program from best to worst is as follows: sfrob, sfrobs, sfrobu
+-sfrobs probably sits between the two c programs because it uses fewer system calls than sfrobu, but is written in a scripting language, bash, which takes longer to process than a programming language, such as c
